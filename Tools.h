@@ -11,6 +11,7 @@
 #include <fstream>
 #include <filesystem>
 
+
 namespace fs = std::filesystem;
 
 using namespace std;
@@ -20,6 +21,7 @@ protected:
     vector<string> *operations;
     vector<string> *files;
     vector<string> *words;
+    string path = "/Users/mike/CLionProjects/stn";
 
 public:
     Tools() {
@@ -70,14 +72,42 @@ public:
 
     bool SearchFileFromDir(string fileName) {
         // TODO найти нормальный способ поиска файлов
-        string path = "/Users/mike/CLionProjects/stn";
-        for (const auto &entry : fs::directory_iterator(path)) {
+        for (const auto &entry : fs::directory_iterator(this->path)) {
+            this->files->push_back(CutString(entry.path()));
             if (this->CutString(entry.path()) == fileName) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    void ReadAllFiles() {
+        ifstream file;
+        ofstream newfile;
+        string text;
+        string allText = "";
+
+        for (int i = 0; i < this->files->size(); i++) {
+            allText = "";
+            string filePath = this->path + "/" + this->files->at(i);
+            file.open(filePath);
+            if (!file.is_open()) {
+                cout << "oshibka";
+            }
+
+            while (getline(file, text)) {
+                allText += text;
+            }
+            newfile.open(path + "/" + to_string(this->CreateHash(allText)));
+            newfile.close();
+            file.close();
+        }
+    }
+
+    size_t CreateHash(string fileString) {
+        hash<string> fileHash;
+        return fileHash(fileString);
     }
 
     virtual ~Tools() {

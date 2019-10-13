@@ -8,5 +8,6 @@ int main()
 {
     Tools tools;
     cout<<tools.SearchFileFromDir("main.cpp");
+    tools.ReadAllFiles();
 
 }
