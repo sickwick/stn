@@ -1,6 +1,12 @@
 #include <iostream>
+#include "Tools.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+namespace fs = std::filesystem;
+using namespace std;
+
+int main()
+{
+    Tools tools;
+    cout<<tools.SearchFileFromDir("main.cpp");
+
 }
