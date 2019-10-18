@@ -11,24 +11,28 @@
 #include <fstream>
 #include <filesystem>
 
-
 namespace fs = std::filesystem;
 
 using namespace std;
-
-class Tools {
+class Tools{
+private:
+    Tools(){}
+    Tools(const Tools&);
+    Tools& operator = (Tools&);
+    static Tools * p_instance;
+public:
+    static Tools* getInstance(){
+        if(!p_instance)
+            p_instance = new Tools();
+        return p_instance;
+    }
 protected:
-    vector<string> *operations;
-    vector<string> *files;
-    vector<string> *words;
+    vector<string> *operations = new vector<string>{"add", "commit"};;
+    vector<string> *files = new vector<string>{};
+    vector<string> *words = new vector<string>{};
     string path = "/Users/mike/CLionProjects/stn";
 
 public:
-    Tools() {
-        operations = new vector<string>{"add", "commit"};
-        files = new vector<string>{};
-        words = new vector<string>{};
-    }
 
     bool CheckLine(string name, string operation, string arg) {
         bool flag = false;
@@ -110,12 +114,22 @@ public:
         return fileHash(fileString);
     }
 
-    virtual ~Tools() {
-        this->words->clear();
-        this->files->clear();
-        this->operations->clear();
+    //TODO: create this func. Index file path can find in Initialize.h
+
+    void ModifyIndex(string operation, string blob){
+
     }
+
+
+
+//    virtual ~Tools() {
+//        this->words->clear();
+//        this->files->clear();
+//        this->operations->clear();
+//    }
 };
 
 
 #endif //STN_TOOLS_H
+
+
