@@ -27,24 +27,26 @@ public:
     bool CreateFolder() {
         int dir = filesystem::create_directory(this->path);
         if (!dir) {
-            Logger::getInstance()->LogError("Directory didn't create");
             return false;
         }
-        Logger::getInstance()->LogInformation("Create main directory");
         return true;
     }
 
     bool CreateSubDirs() {
         vector<int> *dirs = new vector<int>{};
+        ifstream file;
         bool isCreated = true;
         for (int i = 0; i < this->subDirs->size(); i++) {
             dirs->push_back(filesystem::create_directory(this->path + "/" + this->subDirs->at(i)));
         }
 
-        for (int i = 0; i < dirs->size(); i++) {
-            dirs->at(i) ? isCreated = true
-                        : isCreated = false, Logger::getInstance()->LogError(
-                    "Directory" + to_string(dirs->at(i)) + "didn't create");
+        for (int i = 0; i < this->subDirs->size(); i++) {
+            file.open(this->path + "/" + this->subDirs->at(i));
+            if(!file.is_open()){
+                Logger::getInstance()->LogError(
+                        "Directory " + this->subDirs->at(i) + " didn't create");
+                isCreated = false;
+            }
         }
 
         if (isCreated) {
