@@ -68,6 +68,10 @@ public:
         return isCreated;
     }
 
+    ~Initialize(){
+        this->files->clear();
+        this->subDirs->clear();
+    }
 };
 
 #endif //STN_INITIALIZE_H

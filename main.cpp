@@ -1,14 +1,17 @@
 #include <iostream>
 #include "Tools.h"
-#include "Initialize.h"
+#include "Commands/Initialize.h"
+#include "Logger.h"
 
 using namespace std;
 
 Tools *Tools::p_instance = 0;
+Logger *Logger::p_instance = 0;
 
 int main()
 {
     Tools* tools = Tools::getInstance();
+    Logger* logger = Logger::getInstance();
     Initialize init;
     cout<<"Create"<<" "<<init.CreateFolder()<<endl;
     cout<<"Dirs"<<" "<<init.CreateSubDirs();
