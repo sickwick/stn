@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include "../Logger.h"
 
 class Initialize {
 private:
@@ -26,9 +27,10 @@ public:
     bool CreateFolder() {
         int dir = filesystem::create_directory(this->path);
         if (!dir) {
+            Logger::getInstance()->LogError("Directory didn't create");
             return false;
         }
-
+        Logger::getInstance()->LogInformation("Create main directory");
         return true;
     }
 
@@ -40,7 +42,13 @@ public:
         }
 
         for (int i = 0; i < dirs->size(); i++) {
-            dirs->at(i) ? isCreated = true : isCreated = false;
+            dirs->at(i) ? isCreated = true
+                        : isCreated = false, Logger::getInstance()->LogError(
+                    "Directory" + to_string(dirs->at(i)) + "didn't create");
+        }
+
+        if (isCreated) {
+            Logger::getInstance()->LogInformation("Directories created successfully");
         }
 
         return isCreated;
@@ -59,16 +67,21 @@ public:
         for (int i = 0; i < this->files->size(); i++) {
             file.open(this->path + "/" + this->files->at(i));
             if (!file.is_open()) {
+                Logger::getInstance()->LogError("File - " + this->files->at(i) + "didn't create");
                 isCreated = false;
             }
 
             file.close();
         }
 
+        if(isCreated){
+            Logger::getInstance()->LogInformation("All files created successfully");
+        }
+
         return isCreated;
     }
 
-    ~Initialize(){
+    ~Initialize() {
         this->files->clear();
         this->subDirs->clear();
     }
