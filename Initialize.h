@@ -30,25 +30,24 @@ public:
     }
 
     bool CreateSubDirs() {
-        vector<int>* dirs = new vector<int>{};
+        vector<int> *dirs = new vector<int>{};
         bool flag = true;
         for (int i = 0; i < this->subDirs->size(); i++) {
-            dirs->push_back( filesystem::create_directory(this->path + "/" + this->subDirs->at(i)));
+            dirs->push_back(filesystem::create_directory(this->path + "/" + this->subDirs->at(i)));
         }
 
-        for(int i=0;i< dirs->size();i++){
-            if(dirs->at(i)){
-                continue;
-            }
-            else{
-                flag = false;
-            }
+        for (int i = 0; i < dirs->size(); i++) {
+            dirs->at(i)?flag = true:flag = false;
         }
 
-        if(flag){
+        if (flag) {
             return true;
         }
         return false;
+    }
+
+    bool CreateFiles() {
+
     }
 
 };
