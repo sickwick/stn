@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Tools.h"
 
-namespace fs = std::filesystem;
 using namespace std;
 
 int main()
