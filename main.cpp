@@ -10,7 +10,8 @@ int main()
 {
     Tools* tools = Tools::getInstance();
     Initialize init;
-    cout<<init.CreateFolder();
+    cout<<"Create"<<" "<<init.CreateFolder()<<endl;
+    cout<<"Dirs"<<" "<<init.CreateSubDirs();
 //    tools.ReadAllFiles();
 
 }
