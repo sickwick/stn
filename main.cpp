@@ -12,6 +12,7 @@ int main()
     Initialize init;
     cout<<"Create"<<" "<<init.CreateFolder()<<endl;
     cout<<"Dirs"<<" "<<init.CreateSubDirs();
+    cout<<endl<<"Files"<<" "<<init.CreateFiles();
 //    tools.ReadAllFiles();
 
 }

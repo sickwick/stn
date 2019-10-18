@@ -14,15 +14,19 @@
 namespace fs = std::filesystem;
 
 using namespace std;
-class Tools{
+
+class Tools {
 private:
-    Tools(){}
-    Tools(const Tools&);
-    Tools& operator = (Tools&);
-    static Tools * p_instance;
+    Tools() {}
+
+    Tools(const Tools &);
+
+    Tools &operator=(Tools &);
+
+    static Tools *p_instance;
 public:
-    static Tools* getInstance(){
-        if(!p_instance)
+    static Tools *getInstance() {
+        if (!p_instance)
             p_instance = new Tools();
         return p_instance;
     }
@@ -117,17 +121,16 @@ public:
 
     //TODO: create this func. Index file path can find in Initialize.h
 
-    void ModifyIndex(string operation, string blob){
+    void ModifyIndex(string operation, string blob) {
 
     }
 
 
-
-//    virtual ~Tools() {
-//        this->words->clear();
-//        this->files->clear();
-//        this->operations->clear();
-//    }
+    ~Tools() {
+        this->words->clear();
+        this->files->clear();
+        this->operations->clear();
+    }
 };
 
 
