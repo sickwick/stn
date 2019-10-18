@@ -26,13 +26,14 @@ public:
             p_instance = new Tools();
         return p_instance;
     }
+
 protected:
     vector<string> *operations = new vector<string>{"add", "commit"};;
     vector<string> *files = new vector<string>{};
     vector<string> *words = new vector<string>{};
-    string path = "/Users/mike/CLionProjects/stn";
 
 public:
+    string path = "/Users/mike/CLionProjects/stn";
 
     bool CheckLine(string name, string operation, string arg) {
         bool flag = false;
