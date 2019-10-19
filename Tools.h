@@ -35,6 +35,9 @@ protected:
     vector<string> *operations = new vector<string>{"add", "commit"};;
     vector<string> *files = new vector<string>{};
     vector<string> *words = new vector<string>{};
+public:
+    vector<string> *subDirs = new vector<string>{"objects", "versions", "logs"};
+    vector<string> *fileNames = new vector<string>{"Index", "objects/info.txt"};
 
 public:
     string path = "/Users/mike/CLionProjects/stn";
@@ -121,7 +124,7 @@ public:
         return fileHash(fileString);
     }
 
-    //TODO: create this func. Index file path can find in Initialize.h
+    //TODO: create this func. Index.txt file path can find in Initialize.h
 
     void ModifyIndex(string operation, string blob) {
 
@@ -132,6 +135,8 @@ public:
         this->words->clear();
         this->files->clear();
         this->operations->clear();
+        this->subDirs->clear();
+        this->fileNames->clear();
     }
 };
 

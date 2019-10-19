@@ -14,16 +14,7 @@ class Initialize {
 private:
     string path = Tools::getInstance()->path + "/.stn";
 
-    vector<string> *subDirs;
-    vector<string> *files;
 public:
-
-    Initialize() {
-        //TODO: Вынести в отдельный файл заполнение вектора
-        subDirs = new vector<string>{"objects", "versions", "logs"};
-        files = new vector<string>{"Index", "objects/info.txt"};
-    }
-
     bool CreateFolder() {
         int dir = filesystem::create_directory(this->path);
         if (!dir) {
@@ -36,15 +27,15 @@ public:
         vector<int> *dirs = new vector<int>{};
         ifstream file;
         bool isCreated = true;
-        for (int i = 0; i < this->subDirs->size(); i++) {
-            dirs->push_back(filesystem::create_directory(this->path + "/" + this->subDirs->at(i)));
+        for (int i = 0; i < Tools::getInstance()->subDirs->size(); i++) {
+            dirs->push_back(filesystem::create_directory(this->path + "/" + Tools::getInstance()->subDirs->at(i)));
         }
 
-        for (int i = 0; i < this->subDirs->size(); i++) {
-            file.open(this->path + "/" + this->subDirs->at(i));
-            if(!file.is_open()){
+        for (int i = 0; i < Tools::getInstance()->subDirs->size(); i++) {
+            file.open(this->path + "/" + Tools::getInstance()->subDirs->at(i));
+            if (!file.is_open()) {
                 Logger::getInstance()->LogError(
-                        "Directory " + this->subDirs->at(i) + " didn't create");
+                        "Directory " + Tools::getInstance()->subDirs->at(i) + " didn't create");
                 isCreated = false;
             }
         }
@@ -61,31 +52,26 @@ public:
         ifstream file;
         bool isCreated = true;
 
-        for (int i = 0; i < this->files->size(); i++) {
-            newFile.open(this->path + "/" + this->files->at(i));
+        for (int i = 0; i < Tools::getInstance()->fileNames->size(); i++) {
+            newFile.open(this->path + "/" + Tools::getInstance()->fileNames->at(i));
             newFile.close();
         }
 
-        for (int i = 0; i < this->files->size(); i++) {
-            file.open(this->path + "/" + this->files->at(i));
+        for (int i = 0; i < Tools::getInstance()->fileNames->size(); i++) {
+            file.open(this->path + "/" + Tools::getInstance()->fileNames->at(i));
             if (!file.is_open()) {
-                Logger::getInstance()->LogError("File - " + this->files->at(i) + "didn't create");
+                Logger::getInstance()->LogError("File - " + Tools::getInstance()->fileNames->at(i) + "didn't create");
                 isCreated = false;
             }
 
             file.close();
         }
 
-        if(isCreated){
+        if (isCreated) {
             Logger::getInstance()->LogInformation("All files created successfully");
         }
 
         return isCreated;
-    }
-
-    ~Initialize() {
-        this->files->clear();
-        this->subDirs->clear();
     }
 };
 

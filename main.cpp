@@ -17,7 +17,7 @@ int main()
     NewChange newChange;
     cout<<"Create"<<" "<<init.CreateFolder()<<endl;
     cout<<"Dirs"<<" "<<init.CreateSubDirs();
-    cout<<endl<<"Files"<<" "<<init.CreateFiles();
+    cout<<endl<<"Files"<<" "<<init.CreateFiles()<<endl;
     cout<<newChange.CreateDirsWithHashTitle();
 //    tools.ReadAllFiles();
 
