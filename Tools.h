@@ -45,6 +45,7 @@ public:
             for (int i = 0; i < this->operations->size(); i++) {
                 if (operation == operations->at(i)) {
                     flag = true;
+                    break;
                 }
             }
 
@@ -60,6 +61,7 @@ public:
 
         return false;
     }
+
 
     string CutString(string longPath) {
         string shortPath;

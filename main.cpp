@@ -2,7 +2,7 @@
 #include "Tools.h"
 #include "Commands/Initialize.h"
 #include "Logger.h"
-#include <ctime>
+#include "Commands/NewChange.h"
 
 using namespace std;
 
@@ -14,10 +14,11 @@ int main()
     Tools* tools = Tools::getInstance();
     Logger* logger = Logger::getInstance();
     Initialize init;
+    NewChange newChange;
     cout<<"Create"<<" "<<init.CreateFolder()<<endl;
     cout<<"Dirs"<<" "<<init.CreateSubDirs();
     cout<<endl<<"Files"<<" "<<init.CreateFiles();
-    cout<<to_string(clock());
+    cout<<newChange.CreateDirsWithHashTitle();
 //    tools.ReadAllFiles();
 
 }

@@ -28,7 +28,6 @@ private:
     string loggerPath = Tools::getInstance()->path + "/.stn/logs";
     ofstream loggerFile;
 public:
-    //TODO: изменить код так, чтобы создавался один файл логов
     void LogInformation(string stringForLog) {
         loggerFile.open(this->loggerPath + "/information", ios_base::app);
         loggerFile << "--INFORMATION--" << " " << stringForLog << endl;
