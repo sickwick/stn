@@ -16,33 +16,11 @@ private:
 
 public:
     NewChange() {
-        files = new vector<string>{"main.cpp", "Logger.h"};
+        files = new vector<string>{};
         hashNames = new vector<string>{};
+        *files = Tools::getInstance()->ReadAllFilesInDir();
     }
 
-private:
-//    bool CheckLine(string operation, string arg){
-//        if(operation == "add"){
-//
-//        }
-//    }
-//    void CheckFiles(){
-//
-//    }
-//
-//    bool SearchFileFromDir(string fileName) {
-//        // TODO найти нормальный способ поиска файлов
-//        for (const auto &entry : fs::directory_iterator(Tools::getInstance()->path)) {
-//            this->files->push_back(Tools::getInstance()->CutString(entry.path()));
-//            if (Tools::getInstance()->CutString(entry.path()) == fileName) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
-public:
     bool CreateDirsWithHashTitle() {
         ifstream dir;
         bool isCreated = true;
@@ -78,6 +56,7 @@ public:
         return isCreated;
     }
 
+private:
     void WriteInIndexFile(string fileName, string fileHash) {
         ofstream index(this->path + "/Index", ios_base::app);
 
@@ -113,11 +92,11 @@ public:
         return allText;
     }
 
+public:
     ~NewChange() {
         this->hashNames->clear();
         this->files->clear();
     }
-
 };
 
 

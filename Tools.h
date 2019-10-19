@@ -66,7 +66,7 @@ public:
     }
 
 
-    string CutString(string longPath) {
+    string CutPathString(string longPath) {
         string shortPath;
         string currentWord = "";
 
@@ -87,8 +87,8 @@ public:
     bool SearchFileFromDir(string fileName) {
         // TODO найти нормальный способ поиска файлов
         for (const auto &entry : fs::directory_iterator(this->path)) {
-            this->files->push_back(CutString(entry.path()));
-            if (this->CutString(entry.path()) == fileName) {
+            this->files->push_back(this->CutPathString(entry.path()));
+            if (this->CutPathString(entry.path()) == fileName) {
                 return true;
             }
         }
@@ -96,7 +96,7 @@ public:
         return false;
     }
 
-    void ReadAllFiles() {
+    vector<string> ReadAllFiles() {
         ifstream file;
         ofstream newfile;
         string text;
@@ -117,6 +117,16 @@ public:
             newfile.close();
             file.close();
         }
+
+        return *this->files;
+    }
+
+    vector<string> ReadAllFilesInDir(){
+        vector<string> *filess = new vector<string>{};
+        for(const auto &entry : fs::directory_iterator(this->path)){
+            filess->push_back(this->CutPathString(entry.path()));
+        }
+        return *filess;
     }
 
     size_t CreateHash(string fileString) {
