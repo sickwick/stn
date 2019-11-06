@@ -40,7 +40,7 @@ public:
     vector<string> *fileNames = new vector<string>{"Index", "objects/info.txt"};
 
 public:
-    string path = "/Users/mike/CLionProjects/stn";
+    string path = "/Users/mike/Documents/GitHub/stn";
 
     bool CheckLine(string name, string operation, string arg) {
         bool flag = false;
