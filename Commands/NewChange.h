@@ -7,8 +7,9 @@
 
 #include <vector>
 #include <string>
+#include "NewBranch.h"
 
-class NewChange {
+class NewChange: public NewBranch {
 private:
     vector<string> *files;
     string path = Tools::getInstance()->path + "/.stn";
@@ -103,6 +104,10 @@ private:
         }
         file << endl << fileString;
         Logger::getInstance()->LogInformation("Добавена версия файла " + name);
+    }
+
+    void WriteAllFilesInBranchIndexFile(){
+        this->CreateNewBranch()
     }
 
 public:

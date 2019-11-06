@@ -36,8 +36,8 @@ protected:
     vector<string> *files = new vector<string>{};
     vector<string> *words = new vector<string>{};
 public:
-    vector<string> *subDirs = new vector<string>{"objects", "versions", "logs"};
-    vector<string> *fileNames = new vector<string>{"Index", "objects/info.txt"};
+    vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
+    vector<string> *fileNames = new vector<string>{"Index"};
 
 public:
     string path = "/Users/mike/Documents/GitHub/stn";
