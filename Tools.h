@@ -40,7 +40,7 @@ public:
     vector<string> *fileNames = new vector<string>{"Index"};
 
 public:
-    string path = "/Users/mike/Documents/GitHub/stn";
+    string path = GetCurrentPath();
 
     bool CheckLine(string name, string operation, string arg) {
         bool flag = false;
@@ -139,7 +139,21 @@ public:
     void ModifyIndex(string operation, string blob) {
 
     }
+private:
+    string GetCurrentPath(){
+        string path = filesystem::current_path();
+        for(int i = path.length()-1;i>0;i--){
+            if(path[i] == '/'){
+                break;
+            }
+            else{
+                path.erase(i,1);
+            }
+        }
 
+        return path;
+    }
+public:
 
     ~Tools() {
         this->words->clear();
