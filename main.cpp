@@ -4,12 +4,10 @@
 #include "Logger.h"
 #include "Controller.h"
 
-
-
 using namespace std;
 
-Tools *Tools::p_instance = nullptr;
-Logger *Logger::p_instance = nullptr;
+Tools *Tools::p_instance = 0;
+Logger *Logger::p_instance = 0;
 
 int main()
 {
@@ -20,13 +18,7 @@ int main()
     cin>>name>>operation;
     Controller controllerBase(operation);
 
-//    Initialize init;
-//    NewChange newChange;
-//    cout<<"Create"<<" "<<init.CreateFolder()<<endl;
-//    cout<<"Dirs"<<" "<<init.CreateSubDirs();
-//    cout<<endl<<"Files"<<" "<<init.CreateFiles()<<endl;
-//    NewBranch newBranch;
 
 //    tools.ReadAllFiles();
-
+    return 0;
 }

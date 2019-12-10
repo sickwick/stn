@@ -1,8 +1,6 @@
 //
 // Created by Mikel Shcherbakov on 10.12.2019.
 //
-#include <string>
-
 #include "Commands/Initialize.h"
 #include "Commands/NewChange.h"
 #include "Commands/NewBranch.h"
@@ -12,7 +10,7 @@
 
 template <typename T, typename Y>
 struct Variables{
-    T _command;
+    T *_command;
     Y *_operations;
 };
 
@@ -35,6 +33,7 @@ public:
     virtual void CallAction(){}
     virtual ~ControllerBase(){
         delete this->vars->_operations;
+        delete this->vars->_command;
         delete this->vars;
     }
 };
@@ -42,16 +41,31 @@ public:
 class Controller: public ControllerBase{
 public:
     Controller(string command){
-        this->vars->_command = command;
+        this->vars->_command = new string(command);
         this->CallAction();
     }
 
     virtual void CallAction() override{
-        if(this->FindOperation(this->vars->_command)){
-            cout<<"Ik";
+        if(this->FindOperation(this->vars->_command->data())){
+            if(this->vars->_command->data() == this->vars->_operations->at(0)){
+                Initialize init;
+                cout<<"here";
+            }
+            else if(this->vars->_command->data() == this->vars->_operations->at(1)){
+                if(Tools::getInstance()->SearchFileFromDir(".stn")){
+                    NewChange newChange;
+                    bool result = newChange.CreateDirsWithHashTitle();
+                    cout<<"here";
+                }
+
+            }
+            // TODO: Добавать класс commit
+            else if(this->vars->_command->data() == this->vars->_operations->at(2)){
+                cout<<"add later";
+            }
         }
     }
-    ~Controller() = default;
+    ~Controller(){}
 };
 
 #endif //STN_CONTROLLER_H

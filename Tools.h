@@ -41,7 +41,6 @@ public:
     vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
     vector<string> *fileNames = new vector<string>{"Index"};
 
-public:
     string path = GetCurrentPath();
 
     bool CheckLine(string name, string operation, string arg = "") {

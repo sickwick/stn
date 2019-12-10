@@ -15,6 +15,11 @@ private:
     string path = Tools::getInstance()->path + "/.stn";
 
 public:
+    Initialize(){
+        this->CreateFolder();
+        this->CreateSubDirs();
+        this->CreateFiles();
+    }
     bool CreateFolder() {
         int dir = filesystem::create_directory(this->path);
         if (!dir) {

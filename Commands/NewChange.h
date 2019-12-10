@@ -20,6 +20,7 @@ public:
         files = new vector<string>{};
         hashNames = new vector<string>{};
         *files = Tools::getInstance()->ReadAllFilesInDir();
+
     }
 
     bool CreateDirsWithHashTitle() {
