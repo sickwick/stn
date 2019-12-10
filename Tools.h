@@ -32,17 +32,19 @@ public:
     }
 
 protected:
-    vector<string> *operations = new vector<string>{"add", "commit"};;
     vector<string> *files = new vector<string>{};
     vector<string> *words = new vector<string>{};
 public:
+    string mainBranch = "master";
+    string currentBranch = mainBranch;
+    vector<string> *operations = new vector<string>{"init", "add", "commit"};
     vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
     vector<string> *fileNames = new vector<string>{"Index"};
 
 public:
     string path = GetCurrentPath();
 
-    bool CheckLine(string name, string operation, string arg) {
+    bool CheckLine(string name, string operation, string arg = "") {
         bool flag = false;
         if (name == "stn") {
             for (int i = 0; i < this->operations->size(); i++) {

@@ -27,8 +27,8 @@ protected:
         return true;
     }
 
-    bool CechoutToBranch(string branchName) {
-
+    bool CheckoutToBranch(string branchName) {
+        return false;
     }
 };
 

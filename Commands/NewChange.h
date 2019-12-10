@@ -107,7 +107,7 @@ private:
     }
 
     void WriteAllFilesInBranchIndexFile(){
-        this->CreateNewBranch()
+//        this->CreateNewBranch();
     }
 
 public:
