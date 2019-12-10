@@ -3,6 +3,7 @@
 #include "Commands/Initialize.h"
 #include "Logger.h"
 #include "Commands/NewChange.h"
+#include "Commands/NewBranch.h"
 
 using namespace std;
 

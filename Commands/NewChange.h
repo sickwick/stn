@@ -7,8 +7,9 @@
 
 #include <vector>
 #include <string>
+#include "NewBranch.h"
 
-class NewChange {
+class NewChange: public NewBranch {
 private:
     vector<string> *files;
     string path = Tools::getInstance()->path + "/.stn";
@@ -46,6 +47,8 @@ public:
                             "file " + this->files->at(i) + " didn't add in " + this->hashNames->at(i));
                 }
                 file << this->GetFileString(this->files->at(i));
+                AddOldVersion(this->files->at(i), this->GetFileString(this->files->at(i)), this->hashNames->at(i));
+
             }
         }
 
@@ -90,6 +93,21 @@ private:
 
         file.close();
         return allText;
+    }
+
+    void AddOldVersion(string name, string fileString, string hashName) {
+        string folderPath = this->path + "/versions/";
+
+        ofstream file(folderPath + hashName);
+        if (!file.is_open()) {
+            Logger::getInstance()->LogError("Ошибка при открытии файла");
+        }
+        file << endl << fileString;
+        Logger::getInstance()->LogInformation("Добавена версия файла " + name);
+    }
+
+    void WriteAllFilesInBranchIndexFile(){
+        this->CreateNewBranch()
     }
 
 public:
