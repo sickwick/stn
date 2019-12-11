@@ -45,6 +45,7 @@ public:
 
     string CheckLine(string arg) {
         if(arg != "."){
+            cout<<"OK";
             return arg;
         }
 

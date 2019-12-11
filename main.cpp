@@ -43,14 +43,15 @@ int main()
     Logger* logger = Logger::getInstance();
     string *name = new string();
     string *operation = new string();
+    string *argument = new string();
     bool choice = true;
     Controller *controller;
     while(choice){
-        cin>>name->data()>>operation->data();
+        cin>>name->data()>>operation->data()>>argument->data();
         if(string(name->data()) == "ex"){
             choice = false;
         }
-        controller = new Controller(operation->data());
+        controller = new Controller(operation->data(), argument->data());
     }
     delete name;
     delete operation;
