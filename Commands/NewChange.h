@@ -12,15 +12,13 @@
 template <typename T, typename Y>
 class NewChangeBase{
 protected:
-    Y *files;
+    Y files;
     Y *hashNames;
     T *path;
 public:
-    NewChangeBase() {
-        this->files = Tools::getInstance()->ReadAllFilesInDir();
-    }
+    NewChangeBase() {}
 
-    virtual bool CreateDirsWithHashTitle();
+    virtual bool CreateDirsWithHashTitle(){}
 protected:
     virtual void WriteInIndexFile(T fileName, T fileHash) {
         ofstream index(string(this->path->data()) + "/Index", ios_base::app);
@@ -73,7 +71,7 @@ protected:
     }
 public:
     ~NewChangeBase(){
-        delete files;
+//        delete files;
         delete hashNames;
         delete path;
     }
@@ -83,6 +81,7 @@ class NewChange: public NewChangeBase<string, vector<string>> {
 
 public:
     NewChange() {
+        this->files = Tools::getInstance()->ReadAllFilesInDir();
         this->hashNames = new vector<string>{};
         this->path = new string(string(Tools::getInstance()->path->data()) + "/.stn");
     }
@@ -91,28 +90,28 @@ public:
         ifstream dir;
         bool isCreated = true;
 
-        for (int i = 0; i < this->files->size(); i++) {
+        for (int i = 0; i < this->files.size(); i++) {
             string fileName = to_string(Tools::getInstance()->
-                    CreateHash(this->GetFileString(this->files->at(i))));
+                    CreateHash(this->GetFileString(this->files.at(i))));
             this->hashNames->push_back(fileName);
             filesystem::create_directory(string(this->path->data()) + "/objects/" + fileName);
         }
 
-        for (int i = 0; i < this->files->size(); i++) {
+        for (int i = 0; i < this->files.size(); i++) {
             dir.open(string(this->path->data()) + "/objects/" + this->hashNames->at(i));
             if (!dir.is_open()) {
                 Logger::getInstance()->LogError(
-                        "Directory " + this->files->at(i) + " didn't create");
+                        "Directory " + this->files.at(i) + " didn't create");
                 isCreated = false;
             } else {
-                WriteInIndexFile(this->files->at(i), this->hashNames->at(i));
+                WriteInIndexFile(this->files.at(i), this->hashNames->at(i));
                 ofstream file(string(this->path->data()) + "/objects/" + this->hashNames->at(i) + "/" + this->hashNames->at(i));
                 if (!file) {
                     Logger::getInstance()->LogError(
-                            "file " + this->files->at(i) + " didn't add in " + this->hashNames->at(i));
+                            "file " + this->files.at(i) + " didn't add in " + this->hashNames->at(i));
                 }
-                file << this->GetFileString(this->files->at(i));
-                AddOldVersion(this->files->at(i), this->GetFileString(this->files->at(i)), this->hashNames->at(i));
+                file << this->GetFileString(this->files.at(i));
+                AddOldVersion(this->files.at(i), this->GetFileString(this->files.at(i)), this->hashNames->at(i));
 
             }
         }
@@ -125,10 +124,7 @@ public:
     }
 
 public:
-    ~NewChange() {
-        this->hashNames->clear();
-        this->files->clear();
-    }
+    ~NewChange() {}
 };
 
 

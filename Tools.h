@@ -123,11 +123,11 @@ public:
     }
 
     vector<string> ReadAllFilesInDir(){
-        vector<string> *filess = new vector<string>{};
+        vector<string> filess;
         for(const auto &entry : fs::directory_iterator(string(this->path->data()))){
-            filess->push_back(this->CutPathString(entry.path()));
+            filess.push_back(this->CutPathString(entry.path()));
         }
-        return *filess;
+        return filess;
     }
 
     size_t CreateHash(string fileString) {
