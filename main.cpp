@@ -9,34 +9,6 @@ using namespace std;
 Tools *Tools::p_instance = 0;
 Logger *Logger::p_instance = 0;
 
-class Base{
-public:
-    virtual void k(){};
-    virtual void s(){};
-};
-
-class Child{
-public:
-    void Create(Base *base){
-        base->k();
-        base->s();
-    }
-};
-
-class Parent: public Base{
-public:
-    virtual void k() override {
-        cout<<"OK";
-    }
-};
-
-class NeParent: public Base{
-public:
-    virtual void s() override {
-        cout<<"IK";
-    }
-};
-
 int main()
 {
     Tools* tools = Tools::getInstance();
@@ -56,9 +28,6 @@ int main()
     delete name;
     delete operation;
     delete controller;
-//    tools.ReadAllFiles();
 
-//    Child *child = new Child();
-//    child->Create(new Parent());
     return 0;
 }
