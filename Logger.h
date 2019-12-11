@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    string loggerPath = Tools::getInstance()->path + "/.stn/logs";
+    string loggerPath = string(Tools::getInstance()->path->data()) + "/.stn/logs";
     ofstream loggerFile;
 public:
     void LogInformation(string stringForLog) {

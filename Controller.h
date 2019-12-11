@@ -9,49 +9,44 @@
 #define STN_CONTROLLER_H
 
 template <typename T, typename Y>
-struct Variables{
-    T *_command;
-    Y *_operations;
-};
-
 class ControllerBase{
 protected:
-    Variables<string, vector<string>> *vars = new Variables<string, vector<string>>{};
+    T *_command;
+    Y *_operations;
 public:
     ControllerBase() {
-        vars->_operations = Tools::getInstance()->operations;
+        this->_operations = Tools::getInstance()->operations;
     }
     virtual bool FindOperation(string command){
-        for(int i=0;i<this->vars->_operations->size();i++){
-            if(this->vars->_operations->at(i) == command){
+        for(int i=0;i<this->_operations->size();i++){
+            if(this->_operations->at(i) == command){
                 return true;
             }
         }
 
         return false;
     }
-    virtual void CallAction(){}
+    virtual void CallAction() = 0;
     virtual ~ControllerBase(){
-        delete this->vars->_operations;
-        delete this->vars->_command;
-        delete this->vars;
+        delete this->_operations;
+        delete this->_command;
     }
 };
 
-class Controller: public ControllerBase{
+class Controller: public ControllerBase<string, vector<string>>{
 public:
     Controller(string command){
-        this->vars->_command = new string(command);
+        this->_command = new string(command);
         this->CallAction();
     }
 
     virtual void CallAction() override{
-        if(this->FindOperation(this->vars->_command->data())){
-            if(this->vars->_command->data() == this->vars->_operations->at(0)){
+        if(this->FindOperation(this->_command->data())){
+            if(this->_command->data() == this->_operations->at(0)){
                 Initialize init;
                 cout<<"here";
             }
-            else if(this->vars->_command->data() == this->vars->_operations->at(1)){
+            else if(this->_command->data() == this->_operations->at(1)){
                 if(Tools::getInstance()->SearchFileFromDir(".stn")){
                     NewChange newChange;
                     bool result = newChange.CreateDirsWithHashTitle();
@@ -60,7 +55,7 @@ public:
 
             }
             // TODO: Добавать класс commit
-            else if(this->vars->_command->data() == this->vars->_operations->at(2)){
+            else if(this->_command->data() == this->_operations->at(2)){
                 cout<<"add later";
             }
         }

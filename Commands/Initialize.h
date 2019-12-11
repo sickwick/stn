@@ -12,7 +12,7 @@
 
 class Initialize {
 private:
-    string path = Tools::getInstance()->path + "/.stn";
+    string path = string(Tools::getInstance()->path->data()) + "/.stn";
 
 public:
     Initialize(){

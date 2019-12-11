@@ -41,7 +41,7 @@ public:
     vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
     vector<string> *fileNames = new vector<string>{"Index"};
 
-    string path = GetCurrentPath();
+    string *path = new string(GetCurrentPath());
 
     bool CheckLine(string name, string operation, string arg = "") {
         bool flag = false;
@@ -87,7 +87,7 @@ public:
 
     bool SearchFileFromDir(string fileName) {
         // TODO найти нормальный способ поиска файлов
-        for (const auto &entry : fs::directory_iterator(this->path)) {
+        for (const auto &entry : fs::directory_iterator(this->path->data())) {
             this->files->push_back(this->CutPathString(entry.path()));
             if (this->CutPathString(entry.path()) == fileName) {
                 return true;
@@ -105,7 +105,7 @@ public:
 
         for (int i = 0; i < this->files->size(); i++) {
             allText = "";
-            string filePath = this->path + "/" + this->files->at(i);
+            string filePath = string(this->path->data()) + "/" + this->files->at(i);
             file.open(filePath);
             if (!file.is_open()) {
                 cout << "oshibka";
@@ -114,7 +114,7 @@ public:
             while (getline(file, text)) {
                 allText += text;
             }
-            newfile.open(path + "/" + to_string(this->CreateHash(allText)));
+            newfile.open(string(this->path->data()) + "/" + to_string(this->CreateHash(allText)));
             newfile.close();
             file.close();
         }
@@ -124,7 +124,7 @@ public:
 
     vector<string> ReadAllFilesInDir(){
         vector<string> *filess = new vector<string>{};
-        for(const auto &entry : fs::directory_iterator(this->path)){
+        for(const auto &entry : fs::directory_iterator(string(this->path->data()))){
             filess->push_back(this->CutPathString(entry.path()));
         }
         return *filess;

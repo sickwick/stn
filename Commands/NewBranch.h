@@ -7,7 +7,7 @@
 
 class NewBranch {
 private:
-    string branchDir = Tools::getInstance()->path + "/.stn/branches";
+    string branchDir = string(Tools::getInstance()->path->data()) + "/.stn/branches";
 public:
     NewBranch() {}
 
