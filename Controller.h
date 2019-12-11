@@ -48,8 +48,8 @@ public:
             }
             else if(this->_command->data() == this->_operations->at(1)){
                 if(Tools::getInstance()->SearchFileFromDir(".stn")){
-                    NewChange newChange;
-                    bool result = newChange.CreateDirsWithHashTitle();
+                    NewChangeBuilder *newChange = new NewChangeBuilder();
+                    newChange->Build(new NewChange());
                     cout<<"here";
                 }
 

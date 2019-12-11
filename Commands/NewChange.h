@@ -18,6 +18,7 @@ protected:
 public:
     NewChangeBase() {}
 
+    virtual void createObjectDirectory(){}
     virtual bool CreateDirsWithHashTitle(){}
 protected:
     virtual void WriteInIndexFile(T fileName, T fileHash) {
@@ -77,6 +78,16 @@ public:
     }
 };
 
+
+class NewChangeBuilder{
+public:
+    template <typename T, typename Y>
+    void Build(NewChangeBase<T,Y> *newChangeBase){
+        newChangeBase->createObjectDirectory();
+        newChangeBase->CreateDirsWithHashTitle();
+    }
+};
+
 class NewChange: public NewChangeBase<string, vector<string>> {
 
 public:
@@ -85,17 +96,17 @@ public:
         this->hashNames = new vector<string>{};
         this->path = new string(string(Tools::getInstance()->path->data()) + "/.stn");
     }
-
-    virtual bool CreateDirsWithHashTitle() override {
-        ifstream dir;
-        bool isCreated = true;
-
+    virtual void createObjectDirectory(){
         for (int i = 0; i < this->files.size(); i++) {
             string fileName = to_string(Tools::getInstance()->
                     CreateHash(this->GetFileString(this->files.at(i))));
             this->hashNames->push_back(fileName);
             filesystem::create_directory(string(this->path->data()) + "/objects/" + fileName);
         }
+    }
+    virtual bool CreateDirsWithHashTitle() override {
+        ifstream dir;
+        bool isCreated = true;
 
         for (int i = 0; i < this->files.size(); i++) {
             dir.open(string(this->path->data()) + "/objects/" + this->hashNames->at(i));
