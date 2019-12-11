@@ -16,10 +16,18 @@ protected:
     Y *hashNames;
     T *path;
 public:
-    NewChangeBase() {}
+    NewChangeBase(): path(this->path = new string(string(Tools::getInstance()->path->data()) + "/.stn")) {}
 
-    virtual void createObjectDirectory(){}
+    virtual void createObjectDirectory(){
+        for (int i = 0; i < this->files.size(); i++) {
+            string fileName = to_string(Tools::getInstance()->
+                    CreateHash(this->GetFileString(this->files.at(i))));
+            this->hashNames->push_back(fileName);
+            filesystem::create_directory(string(this->path->data()) + "/objects/" + fileName);
+        }
+    }
     virtual bool CreateDirsWithHashTitle(){}
+
 protected:
     virtual void WriteInIndexFile(T fileName, T fileHash) {
         ofstream index(string(this->path->data()) + "/Index", ios_base::app);
@@ -88,21 +96,12 @@ public:
     }
 };
 
-class NewChange: public NewChangeBase<string, vector<string>> {
+class NewChangeDot: public NewChangeBase<string, vector<string>> {
 
 public:
-    NewChange() {
+    NewChangeDot() {
         this->files = Tools::getInstance()->ReadAllFilesInDir();
         this->hashNames = new vector<string>{};
-        this->path = new string(string(Tools::getInstance()->path->data()) + "/.stn");
-    }
-    virtual void createObjectDirectory(){
-        for (int i = 0; i < this->files.size(); i++) {
-            string fileName = to_string(Tools::getInstance()->
-                    CreateHash(this->GetFileString(this->files.at(i))));
-            this->hashNames->push_back(fileName);
-            filesystem::create_directory(string(this->path->data()) + "/objects/" + fileName);
-        }
     }
     virtual bool CreateDirsWithHashTitle() override {
         ifstream dir;
@@ -135,7 +134,15 @@ public:
     }
 
 public:
-    ~NewChange() {}
+    ~NewChangeDot() {}
+};
+
+class NewChangeForFile: public NewChangeBase<string, vector<string>>{
+public:
+    NewChangeForFile(){
+        this->files = Tools::getInstance()->ReadAllFilesInDir();
+        this->hashNames = new vector<string>{};
+    }
 };
 
 

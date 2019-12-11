@@ -43,27 +43,12 @@ public:
 
     string *path = new string(GetCurrentPath());
 
-    bool CheckLine(string name, string operation, string arg = "") {
-        bool flag = false;
-        if (name == "stn") {
-            for (int i = 0; i < this->operations->size(); i++) {
-                if (operation == operations->at(i)) {
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (flag) {
-                if (arg != ".") {
-                    return this->SearchFileFromDir("main");
-                }
-            }
-        } else {
-            cout << endl << "Неизвестная команда - " << name;
-            return false;
+    string CheckLine(string arg) {
+        if(arg != "."){
+            return arg;
         }
 
-        return false;
+        return "dot";
     }
 
 

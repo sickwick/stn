@@ -12,6 +12,7 @@ template <typename T, typename Y>
 class ControllerBase{
 protected:
     T *_command;
+    T *_arg;
     Y *_operations;
 public:
     ControllerBase() {
@@ -35,8 +36,9 @@ public:
 
 class Controller: public ControllerBase<string, vector<string>>{
 public:
-    Controller(string command){
+    Controller(string command, string arg){
         this->_command = new string(command);
+        this->_arg = new string(arg);
         this->CallAction();
     }
 
@@ -44,15 +46,17 @@ public:
         if(this->FindOperation(this->_command->data())){
             if(this->_command->data() == this->_operations->at(0)){
                 Initialize init;
-                cout<<"here";
             }
             else if(this->_command->data() == this->_operations->at(1)){
                 if(Tools::getInstance()->SearchFileFromDir(".stn")){
                     NewChangeBuilder *newChange = new NewChangeBuilder();
-                    newChange->Build(new NewChange());
-                    cout<<"here";
+                    if(Tools::getInstance()->CheckLine(this->_arg->data()) == "dot"){
+                        newChange->Build(new NewChangeDot());
+                    }
+                    else{
+                        newChange->Build(new NewChangeForFile());
+                    }
                 }
-
             }
             // TODO: Добавать класс commit
             else if(this->_command->data() == this->_operations->at(2)){
