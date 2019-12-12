@@ -8,8 +8,8 @@
 #ifndef STN_CONTROLLER_H
 #define STN_CONTROLLER_H
 
-template <typename T, typename Y>
-class ControllerBase{
+template<typename T, typename Y>
+class ControllerBase {
 protected:
     T *_command;
     T *_arg;
@@ -18,53 +18,55 @@ public:
     ControllerBase() {
         this->_operations = Tools::getInstance()->operations;
     }
-    virtual bool FindOperation(string command){
-        for(int i=0;i<this->_operations->size();i++){
-            if(this->_operations->at(i) == command){
+
+    virtual bool FindOperation(string command) {
+        for (int i = 0; i < this->_operations->size(); i++) {
+            if (this->_operations->at(i) == command) {
                 return true;
             }
         }
 
         return false;
     }
+
     virtual void CallAction() = 0;
-    virtual ~ControllerBase(){
+
+    virtual ~ControllerBase() {
         delete this->_operations;
         delete this->_command;
     }
 };
 
-class Controller: public ControllerBase<string, vector<string>>{
+class Controller : public ControllerBase<string, vector<string>> {
 public:
-    Controller(string command, string arg){
+    Controller(string command, string arg) {
         this->_command = new string(command);
         this->_arg = new string(arg);
         this->CallAction();
     }
 
-    virtual void CallAction() override{
-        if(this->FindOperation(this->_command->data())){
-            if(this->_command->data() == this->_operations->at(0)){
+    virtual void CallAction() override {
+        if (this->FindOperation(this->_command->data())) {
+            if (this->_command->data() == this->_operations->at(0)) {
                 Initialize init;
-            }
-            else if(this->_command->data() == this->_operations->at(1)){
-                if(Tools::getInstance()->SearchFileFromDir(".stn")){
+            } else if (this->_command->data() == this->_operations->at(1)) {
+                if (Tools::getInstance()->SearchFileFromDir(".stn")) {
                     NewChangeBuilder *newChange = new NewChangeBuilder();
-                    if(Tools::getInstance()->CheckLine(this->_arg->data()) == "dot"){
+                    if (Tools::getInstance()->CheckLine(this->_arg->data()) == "dot") {
                         newChange->Build(new NewChangeDot());
-                    }
-                    else{
+                    } else {
                         newChange->Build(new NewChangeForFile(this->_arg->data()));
                     }
                 }
             }
-            // TODO: Добавать класс commit
-            else if(this->_command->data() == this->_operations->at(2)){
-                cout<<"add later";
+                // TODO: Добавать класс commit
+            else if (this->_command->data() == this->_operations->at(2)) {
+                NewCommit newCommit(this->_arg->data());
             }
         }
     }
-    ~Controller(){}
+
+    ~Controller() {}
 };
 
 #endif //STN_CONTROLLER_H

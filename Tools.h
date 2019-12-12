@@ -5,11 +5,10 @@
 #ifndef STN_TOOLS_H
 #define STN_TOOLS_H
 
-#include <string>
-#include <iostream>
-#include <vector>
 #include <fstream>
 #include <filesystem>
+#include <vector>
+#include "Logger.h"
 
 namespace fs = std::filesystem;
 
@@ -39,12 +38,12 @@ public:
     string currentBranch = mainBranch;
     vector<string> *operations = new vector<string>{"init", "add", "commit"};
     vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
-    vector<string> *fileNames = new vector<string>{"Index"};
+    vector<string> *fileNames = new vector<string>{"Index", "Current_branch", "Branches"};
 
     string *path = new string(GetCurrentPath());
 
     string CheckLine(string arg) {
-        if(arg != "."){
+        if (arg != ".") {
             return arg;
         }
 
@@ -107,9 +106,9 @@ public:
         return *this->files;
     }
 
-    vector<string> ReadAllFilesInDir(){
+    vector<string> ReadAllFilesInDir() {
         vector<string> filess;
-        for(const auto &entry : fs::directory_iterator(string(this->path->data()))){
+        for (const auto &entry : fs::directory_iterator(string(this->path->data()))) {
             filess.push_back(this->CutPathString(entry.path()));
         }
         return filess;
@@ -120,24 +119,82 @@ public:
         return fileHash(fileString);
     }
 
-    //TODO: create this func. Index.txt file path can find in Initialize.h
-
-    void ModifyIndex(string operation, string blob) {
-
-    }
-private:
-    string GetCurrentPath(){
-        string path = filesystem::current_path();
-        for(int i = path.length()-1;i>0;i--){
-            if(path[i] == '/'){
-                break;
+    string GetFileString(string fileName) {
+        ifstream file(string(this->path->data()) + "/" + fileName);
+        string allText = "";
+        string text = "";
+        if (!file.is_open()) {
+            for (int i = 0; i < this->subDirs->size(); i++) {
+                file.open(
+                        string(this->path->data()) + "/" + this->subDirs->at(i) + "/" +
+                        fileName);
+                if (file.is_open()) {
+                    break;
+                }
             }
-            else{
-                path.erase(i,1);
+        }
+
+        while (getline(file, text)) {
+            allText += text;
+        }
+
+        file.close();
+
+        return allText;
+    }
+
+    template<typename T>
+    int FindOperationIndex(T operation) {
+        if (operation == this->operations->at(0)) {
+            return 0;
+        } else if (operation == this->operations->at(1)) {
+            return 1;
+        } else if (operation == this->operations->at(2)) {
+            return 2;
+        }
+
+        return 10;
+    }
+
+    template<typename T>
+    bool ValidateIndex(T operation) {
+        T indexContent = this->GetFileString(".stn/Index");
+
+        int inputOperationIndex = this->FindOperationIndex(operation);
+        int currentOperationIndex;
+
+        if (indexContent.length() >= 5) {
+            if (indexContent.substr(0, 5) == this->operations->at(2)) {
+                currentOperationIndex = 2;
+            }
+        } else if (indexContent.length() >= 3) {
+            if (indexContent.substr(0, 3) == this->operations->at(1)) {
+                currentOperationIndex = 1;
+            }
+        }
+
+        if (currentOperationIndex == inputOperationIndex) {
+            return false;
+        } else if (currentOperationIndex < inputOperationIndex) {
+            return false;
+        }
+
+        return true;
+    }
+
+private:
+    string GetCurrentPath() {
+        string path = filesystem::current_path();
+        for (int i = path.length() - 1; i > 0; i--) {
+            if (path[i] == '/') {
+                break;
+            } else {
+                path.erase(i, 1);
             }
         }
         return path;
     }
+
 public:
 
     ~Tools() {

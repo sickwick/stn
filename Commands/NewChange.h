@@ -23,9 +23,9 @@ public:
     virtual void createObjectDirectory() {
         for (int i = 0; i < this->files.size(); i++) {
             string fileName = to_string(Tools::getInstance()->
-                    CreateHash(this->GetFileString(this->files.at(i))));
+                    CreateHash(Tools::getInstance()->GetFileString(this->files.at(i))));
             this->hashNames->push_back(fileName);
-            this->shortHashName = fileName.substr(0, 4);
+            this->shortHashName = fileName.substr(0, 6);
             filesystem::create_directory(string(this->path->data()) + "/objects/" + shortHashName);
         }
     }
@@ -36,7 +36,7 @@ protected:
     virtual void WriteInIndexFile(T fileName, T fileHash) {
         ofstream index(string(this->path->data()) + "/Index", ios_base::app);
 
-        index << endl << "add" << " " << fileHash << " " << fileName;
+        index << "add" << " " << fileHash << " " << fileName << endl;
 
         if (index.is_open()) {
             Logger::getInstance()->LogInformation("New line in Index file - add" + fileHash + " " + fileName);
@@ -45,29 +45,6 @@ protected:
         }
 
         index.close();
-    }
-
-    virtual string GetFileString(string fileName) {
-        ifstream file(string(Tools::getInstance()->path->data()) + "/" + fileName);
-        string allText = "";
-        string text = "";
-        if (!file.is_open()) {
-            for (int i = 0; i < Tools::getInstance()->subDirs->size(); i++) {
-                file.open(
-                        string(Tools::getInstance()->path->data()) + "/" + Tools::getInstance()->subDirs->at(i) + "/" +
-                        fileName);
-                if (file.is_open()) {
-                    break;
-                }
-            }
-        }
-
-        while (getline(file, text)) {
-            allText += text;
-        }
-
-        file.close();
-        return allText;
     }
 
     virtual void AddOldVersion(string name, string fileString, string hashName) {
@@ -115,7 +92,7 @@ public:
         bool isCreated = true;
 
         for (int i = 0; i < this->files.size(); i++) {
-            this->shortHashName = this->hashNames->at(i).substr(0, 4);
+            this->shortHashName = this->hashNames->at(i).substr(0, 6);
             dir.open(string(this->path->data()) + "/objects/" + this->shortHashName);
             if (!dir.is_open()) {
                 Logger::getInstance()->LogError(
@@ -130,7 +107,8 @@ public:
                             "file " + this->files.at(i) + " didn't add in " + this->shortHashName);
                 }
                 file << this->hashNames->at(i);
-                AddOldVersion(this->files.at(i), this->GetFileString(this->files.at(i)), this->shortHashName);
+                AddOldVersion(this->files.at(i), Tools::getInstance()->GetFileString(this->files.at(i)),
+                              this->shortHashName);
 
             }
         }
@@ -138,6 +116,8 @@ public:
         if (isCreated) {
             Logger::getInstance()->LogInformation("Directory created successfully");
         }
+
+        dir.close();
 
         return isCreated;
     }
@@ -157,9 +137,9 @@ public:
 
     virtual void createObjectDirectory() override {
         this->fileName = to_string(Tools::getInstance()->
-                CreateHash(this->GetFileString(this->file->data())));
+                CreateHash(Tools::getInstance()->GetFileString(this->file->data())));
         this->hashNames->push_back(this->fileName);
-        this->shortHashName = this->hashNames->at(0).substr(0, 4);
+        this->shortHashName = this->hashNames->at(0).substr(0, 6);
         filesystem::create_directory(string(this->path->data()) + "/objects/" + this->shortHashName);
 
     }
@@ -183,7 +163,7 @@ public:
                         "file " + string(this->file->data()) + " didn't add in " + this->shortHashName);
             }
             file << this->fileName;
-            AddOldVersion(string(this->file->data()), this->GetFileString(string(this->file->data())),
+            AddOldVersion(string(this->file->data()), Tools::getInstance()->GetFileString(string(this->file->data())),
                           this->shortHashName);
 
         }
@@ -191,6 +171,8 @@ public:
         if (isCreated) {
             Logger::getInstance()->LogInformation("Directory created successfully");
         }
+
+        dir.close();
 
         return isCreated;
     }

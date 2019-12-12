@@ -5,31 +5,82 @@
 #ifndef STN_NEWBRANCH_H
 #define STN_NEWBRANCH_H
 
-class NewBranch {
+#include <ctime>
+
+class NewCommit {
 private:
-    string branchDir = string(Tools::getInstance()->path->data()) + "/.stn/branches";
+    string *path = new string(string(Tools::getInstance()->path->data()) + ".stn");
+
 public:
-    NewBranch() {}
+    NewCommit(string message) {
+        this->CreateCommitFolder(message);
+    }
 
 protected:
-    bool CreateNewBranch(string branchName) {
-        int dir = filesystem::create_directory(this->branchDir + "/" + branchName);
-        if (!dir) {
-            Logger::getInstance()->LogError("Не удалось создать ветку  " + branchName);
-            return false;
-        }
-        Logger::getInstance()->LogInformation("Создана новая ветвь - " + branchName);
+    template<typename T>
+    void CreateCommitFolder(T commit) {
+        int seconds = time(NULL) / 3600;
+        int branchNameHash = Tools::getInstance()->CreateHash(commit);
+        int folderName = seconds + branchNameHash;
 
-        ofstream file(branchDir + "/" + branchName + "/Index");
-        if (!file.is_open()) {
-            Logger::getInstance()->LogError("Не удалось создать файл - Index в " + branchDir + "/" + branchName);
+        bool result = this->WriteHashInBranchFile(folderName, commit);
+
+        if (result) {
+            ifstream Index(string(this->path->data()) + "/Index", ios::in | ios::out);
+            Index.close();
+
+            ofstream index(string(this->path->data()) + "/Index");
+            index << "commit " << commit << folderName;
         }
-        return true;
+
     }
 
-    bool CheckoutToBranch(string branchName) {
-        return false;
+    template<typename T, typename Y>
+    bool WriteHashInBranchFile(T folderName, Y commit) {
+        filesystem::create_directory(string(this->path->data()) + "/objects/" + to_string(folderName));
+
+        ifstream directory(string(this->path->data()) + "/objects/" + to_string(folderName));
+        ifstream Index(string(this->path->data()) + "/Index");
+        ofstream dir(string(this->path->data()) + "/objects/" + to_string(folderName) + "/" + to_string(folderName));
+        bool isCreated = true;
+
+        if (!directory.is_open()) {
+            Logger::getInstance()->LogError(
+                    "Directory " + to_string(folderName) + " didn't create");
+            isCreated = false;
+        } else if (!Index.is_open()) {
+            Logger::getInstance()->LogError(
+                    "File Index didn't open");
+            isCreated = false;
+        } else if (!dir.is_open()) {
+            Logger::getInstance()->LogError(
+                    "File " + to_string(folderName) + " didn't open");
+            isCreated = false;
+        } else {
+            dir << this->FormatIndexFile(Tools::getInstance()->GetFileString(".stn/Index"), commit);
+        }
+
+        directory.close();
+        dir.close();
+        Index.close();
+
+        return isCreated;
     }
+
+private:
+    string FormatIndexFile(string fileString, string commit) {
+        string result = "commit " + commit;
+        for (int i = 0; i < fileString.length() - 4; i++) {
+            string word = fileString.substr(i, 1) + fileString.substr(i + 1, 1) + fileString.substr(i + 2, 1);
+            if (word == "add") {
+                result += "\n";
+            }
+            result += fileString[i];
+        }
+
+        return result;
+    }
+
 };
 
 #endif //STN_NEWBRANCH_H
