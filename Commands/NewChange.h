@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <string>
-#include "NewBranch.h"
+#include "NewCommit.h"
 
 template<typename T, typename Y>
 class NewChangeBase {
@@ -109,7 +109,6 @@ public:
                 file << this->hashNames->at(i);
                 AddOldVersion(this->files.at(i), Tools::getInstance()->GetFileString(this->files.at(i)),
                               this->shortHashName);
-
             }
         }
 
@@ -145,10 +144,9 @@ public:
     }
 
     virtual bool CreateDirsWithHashTitle() override {
-        ifstream dir;
+        ifstream dir(string(this->path->data()) + "/objects/" + this->shortHashName);
         bool isCreated = true;
-        cout << shortHashName;
-        dir.open(string(this->path->data()) + "/objects/" + this->shortHashName);
+
         if (!dir.is_open()) {
             Logger::getInstance()->LogError(
                     "Directory " + string(this->file->data()) + " didn't create");
@@ -156,16 +154,17 @@ public:
         } else {
 
             WriteInIndexFile(this->file->data(), this->shortHashName);
-            ofstream file(
+            ofstream fileWithHashTitle(
                     string(this->path->data()) + "/objects/" + this->shortHashName + "/" + this->shortHashName);
-            if (!file) {
+            if (!fileWithHashTitle.is_open()) {
                 Logger::getInstance()->LogError(
                         "file " + string(this->file->data()) + " didn't add in " + this->shortHashName);
             }
-            file << this->fileName;
+            fileWithHashTitle << this->fileName;
             AddOldVersion(string(this->file->data()), Tools::getInstance()->GetFileString(string(this->file->data())),
                           this->shortHashName);
 
+            fileWithHashTitle.close();
         }
 
         if (isCreated) {

@@ -3,7 +3,7 @@
 //
 #include "Commands/Initialize.h"
 #include "Commands/NewChange.h"
-#include "Commands/NewBranch.h"
+#include "Commands/NewCommit.h"
 
 #ifndef STN_CONTROLLER_H
 #define STN_CONTROLLER_H
@@ -58,9 +58,7 @@ public:
                         newChange->Build(new NewChangeForFile(this->_arg->data()));
                     }
                 }
-            }
-                // TODO: Добавать класс commit
-            else if (this->_command->data() == this->_operations->at(2)) {
+            } else if (this->_command->data() == this->_operations->at(2)) {
                 NewCommit newCommit(this->_arg->data());
             }
         }

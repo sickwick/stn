@@ -2,8 +2,8 @@
 // Created by Mikel Shcherbakov on 06.11.2019.
 //
 
-#ifndef STN_NEWBRANCH_H
-#define STN_NEWBRANCH_H
+#ifndef STN_NEWCOMMIT_H
+#define STN_NEWCOMMIT_H
 
 #include <ctime>
 
@@ -30,7 +30,8 @@ protected:
             Index.close();
 
             ofstream index(string(this->path->data()) + "/Index");
-            index << "commit " << commit << folderName;
+            index << "commit " << commit << "\n" <<folderName;
+            index.close();
         }
 
     }
@@ -42,22 +43,17 @@ protected:
         ifstream directory(string(this->path->data()) + "/objects/" + to_string(folderName));
         ifstream Index(string(this->path->data()) + "/Index");
         ofstream dir(string(this->path->data()) + "/objects/" + to_string(folderName) + "/" + to_string(folderName));
-        bool isCreated = true;
+        bool isCreated = false;
 
         if (!directory.is_open()) {
-            Logger::getInstance()->LogError(
-                    "Directory " + to_string(folderName) + " didn't create");
-            isCreated = false;
+            Logger::getInstance()->LogError("Directory " + to_string(folderName) + " didn't create");
         } else if (!Index.is_open()) {
-            Logger::getInstance()->LogError(
-                    "File Index didn't open");
-            isCreated = false;
+            Logger::getInstance()->LogError("File Index didn't open");
         } else if (!dir.is_open()) {
-            Logger::getInstance()->LogError(
-                    "File " + to_string(folderName) + " didn't open");
-            isCreated = false;
+            Logger::getInstance()->LogError("File " + to_string(folderName) + " didn't open");
         } else {
             dir << this->FormatIndexFile(Tools::getInstance()->GetFileString(".stn/Index"), commit);
+            isCreated = true;
         }
 
         directory.close();
@@ -80,7 +76,6 @@ private:
 
         return result;
     }
-
 };
 
-#endif //STN_NEWBRANCH_H
+#endif //STN_NEWCOMMIT_H

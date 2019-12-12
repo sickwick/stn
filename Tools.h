@@ -8,7 +8,6 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
-#include "Logger.h"
 
 namespace fs = std::filesystem;
 
@@ -37,7 +36,7 @@ public:
     string mainBranch = "master";
     string currentBranch = mainBranch;
     vector<string> *operations = new vector<string>{"init", "add", "commit"};
-    vector<string> *subDirs = new vector<string>{"objects", "versions", "logs", "branches"};
+    vector<string> *subDirs = new vector<string>{"objects", "versions", "logs"};
     vector<string> *fileNames = new vector<string>{"Index", "Current_branch", "Branches"};
 
     string *path = new string(GetCurrentPath());
