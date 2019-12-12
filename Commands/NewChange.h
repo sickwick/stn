@@ -9,24 +9,28 @@
 #include <string>
 #include "NewBranch.h"
 
-template <typename T, typename Y>
-class NewChangeBase{
+template<typename T, typename Y>
+class NewChangeBase {
 protected:
     Y files;
     Y *hashNames;
     T *path;
+    T *file;
+    T shortHashName;
 public:
-    NewChangeBase(): path(this->path = new string(string(Tools::getInstance()->path->data()) + "/.stn")) {}
+    NewChangeBase() : path(this->path = new string(string(Tools::getInstance()->path->data()) + ".stn")) {}
 
-    virtual void createObjectDirectory(){
+    virtual void createObjectDirectory() {
         for (int i = 0; i < this->files.size(); i++) {
             string fileName = to_string(Tools::getInstance()->
                     CreateHash(this->GetFileString(this->files.at(i))));
             this->hashNames->push_back(fileName);
-            filesystem::create_directory(string(this->path->data()) + "/objects/" + fileName);
+            this->shortHashName = fileName.substr(0, 4);
+            filesystem::create_directory(string(this->path->data()) + "/objects/" + shortHashName);
         }
     }
-    virtual bool CreateDirsWithHashTitle(){}
+
+    virtual bool CreateDirsWithHashTitle() {}
 
 protected:
     virtual void WriteInIndexFile(T fileName, T fileHash) {
@@ -49,7 +53,9 @@ protected:
         string text = "";
         if (!file.is_open()) {
             for (int i = 0; i < Tools::getInstance()->subDirs->size(); i++) {
-                file.open(string(Tools::getInstance()->path->data()) + "/" + Tools::getInstance()->subDirs->at(i) + "/" + fileName);
+                file.open(
+                        string(Tools::getInstance()->path->data()) + "/" + Tools::getInstance()->subDirs->at(i) + "/" +
+                        fileName);
                 if (file.is_open()) {
                     break;
                 }
@@ -75,11 +81,12 @@ protected:
         Logger::getInstance()->LogInformation("Добавена версия файла " + name);
     }
 
-    void WriteAllFilesInBranchIndexFile(){
+    void WriteAllFilesInBranchIndexFile() {
 //        this->CreateNewBranch();
     }
+
 public:
-    ~NewChangeBase(){
+    ~NewChangeBase() {
 //        delete files;
         delete hashNames;
         delete path;
@@ -87,41 +94,43 @@ public:
 };
 
 
-class NewChangeBuilder{
+class NewChangeBuilder {
 public:
-    template <typename T, typename Y>
-    void Build(NewChangeBase<T,Y> *newChangeBase){
+    template<typename T, typename Y>
+    void Build(NewChangeBase<T, Y> *newChangeBase) {
         newChangeBase->createObjectDirectory();
         newChangeBase->CreateDirsWithHashTitle();
     }
 };
 
-class NewChangeDot: public NewChangeBase<string, vector<string>> {
-
+class NewChangeDot : public NewChangeBase<string, vector<string>> {
 public:
     NewChangeDot() {
         this->files = Tools::getInstance()->ReadAllFilesInDir();
         this->hashNames = new vector<string>{};
     }
+
     virtual bool CreateDirsWithHashTitle() override {
         ifstream dir;
         bool isCreated = true;
 
         for (int i = 0; i < this->files.size(); i++) {
-            dir.open(string(this->path->data()) + "/objects/" + this->hashNames->at(i));
+            this->shortHashName = this->hashNames->at(i).substr(0, 4);
+            dir.open(string(this->path->data()) + "/objects/" + this->shortHashName);
             if (!dir.is_open()) {
                 Logger::getInstance()->LogError(
                         "Directory " + this->files.at(i) + " didn't create");
                 isCreated = false;
             } else {
-                WriteInIndexFile(this->files.at(i), this->hashNames->at(i));
-                ofstream file(string(this->path->data()) + "/objects/" + this->hashNames->at(i) + "/" + this->hashNames->at(i));
+                WriteInIndexFile(this->files.at(i), this->shortHashName);
+                ofstream file(string(this->path->data()) + "/objects/" + this->shortHashName + "/" +
+                              this->shortHashName);
                 if (!file) {
                     Logger::getInstance()->LogError(
-                            "file " + this->files.at(i) + " didn't add in " + this->hashNames->at(i));
+                            "file " + this->files.at(i) + " didn't add in " + this->shortHashName);
                 }
-                file << this->GetFileString(this->files.at(i));
-                AddOldVersion(this->files.at(i), this->GetFileString(this->files.at(i)), this->hashNames->at(i));
+                file << this->hashNames->at(i);
+                AddOldVersion(this->files.at(i), this->GetFileString(this->files.at(i)), this->shortHashName);
 
             }
         }
@@ -137,11 +146,53 @@ public:
     ~NewChangeDot() {}
 };
 
-class NewChangeForFile: public NewChangeBase<string, vector<string>>{
+class NewChangeForFile : public NewChangeBase<string, vector<string>> {
+private:
+    string fileName;
 public:
-    NewChangeForFile(){
-        this->files = Tools::getInstance()->ReadAllFilesInDir();
+    NewChangeForFile(string arg) {
+        this->file = new string(arg);
         this->hashNames = new vector<string>{};
+    }
+
+    virtual void createObjectDirectory() override {
+        this->fileName = to_string(Tools::getInstance()->
+                CreateHash(this->GetFileString(this->file->data())));
+        this->hashNames->push_back(this->fileName);
+        this->shortHashName = this->hashNames->at(0).substr(0, 4);
+        filesystem::create_directory(string(this->path->data()) + "/objects/" + this->shortHashName);
+
+    }
+
+    virtual bool CreateDirsWithHashTitle() override {
+        ifstream dir;
+        bool isCreated = true;
+        cout << shortHashName;
+        dir.open(string(this->path->data()) + "/objects/" + this->shortHashName);
+        if (!dir.is_open()) {
+            Logger::getInstance()->LogError(
+                    "Directory " + string(this->file->data()) + " didn't create");
+            isCreated = false;
+        } else {
+
+            WriteInIndexFile(this->file->data(), this->shortHashName);
+            ofstream file(
+                    string(this->path->data()) + "/objects/" + this->shortHashName + "/" + this->shortHashName);
+            if (!file) {
+                Logger::getInstance()->LogError(
+                        "file " + string(this->file->data()) + " didn't add in " + this->shortHashName);
+            }
+            file << this->fileName;
+            AddOldVersion(string(this->file->data()), this->GetFileString(string(this->file->data())),
+                          this->shortHashName);
+
+        }
+
+        if (isCreated) {
+            Logger::getInstance()->LogInformation("Directory created successfully");
+        }
+
+        return isCreated;
     }
 };
 

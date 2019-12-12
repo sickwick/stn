@@ -54,7 +54,7 @@ public:
                         newChange->Build(new NewChangeDot());
                     }
                     else{
-                        newChange->Build(new NewChangeForFile());
+                        newChange->Build(new NewChangeForFile(this->_arg->data()));
                     }
                 }
             }

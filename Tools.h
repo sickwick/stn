@@ -45,7 +45,6 @@ public:
 
     string CheckLine(string arg) {
         if(arg != "."){
-            cout<<"OK";
             return arg;
         }
 
@@ -137,7 +136,6 @@ private:
                 path.erase(i,1);
             }
         }
-
         return path;
     }
 public:
